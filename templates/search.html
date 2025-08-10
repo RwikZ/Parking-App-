@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+        }
+
+        .navbar {
+            background-color: #d4f4d2;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 18px;
+        }
+
+        .navbar a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .navbar .left {
+            color: red;
+            font-weight: bold;
+        }
+
+        .container {
+            padding: 30px;
+        }
+
+        .search-box {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        select, input[type="text"], button {
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .results-title {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #00008B;
+        }
+
+        .result-card {
+            background-color: white;
+            border: 1px solid #aaa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 10px auto;
+            width: 60%;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .result-card h3 {
+            margin: 0 0 10px;
+            color: #444;
+        }
+
+        .spots {
+            margin-top: 10px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(30px, 1fr));
+            gap: 8px;
+        }
+
+        .spot {
+            text-align: center;
+            font-weight: bold;
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+        .occupied {
+            background-color: #ffb3b3;
+        }
+
+        .available {
+            background-color: #a2f3a2;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="left">Welcome to Admin</div>
+        <div>
+            <a href="/admin">Home</a> |
+            <a href="/users">Users</a> |
+            <a href="/search">Search</a> |
+            <a href="#">Summary</a> |
+            <a href="/login">Logout</a>
+        </div>
+        <div><a href="/admin_edit_profile">Edit Profile</a></div>
+    </div>
+
+    <div class="container">
+        <form method="POST" class="search-box">
+            <select name="category" required>
+                <option value="">Search by</option>
+                <option value="pincode" {% if category == 'pincode' %}selected{% endif %}>Pin Code</option>
+                <option value="user_id" {% if category == 'user_id' %}selected{% endif %}>User ID</option>
+                <option value="location" {% if category == 'location' %}selected{% endif %}>Prime Location</option>
+            </select>
+            <input type="text" name="search" placeholder="e.g., User ID or Prime Location Name" required value="{{ query or '' }}">
+            <button type="submit">Search</button>
+        </form>
+
+        {% if query %}
+        <div class="results-title">Search results for "{{ query }}" in "{{ category|title }}"</div>
+        {% endif %}
+
+        {% if category == "user_id" %}
+            {% if results %}
+                {% for user in results %}
+                <div class="result-card">
+                    <h3>User #{{ user.id }}</h3>
+                    <p><strong>Email:</strong> {{ user.email }}</p>
+                    <p><strong>Username:</strong> {{ user.username }}</p>
+                    <p><strong>Address:</strong> {{ user.address }}</p>
+                    <p><strong>Pin Code:</strong> {{ user.pincode }}</p>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="results-title">❌ No user found with ID "{{ query }}"</div>
+            {% endif %}
+        {% elif category == "location" %}
+            {% if results %}
+                {% for lot in results %}
+                <div class="result-card">
+                    <h3>Parking#{{ lot.id }} - {{ lot.name }}</h3>
+                    <p><a href="/edit_lot/{{ lot.id }}">Edit</a> | <a href="/delete_lot/{{ lot.id }}">Delete</a></p>
+                    <p style="color: green;"><strong>(Occupied: {{ lot.occupied_spots }}/{{ lot.max_spots }})</strong></p>
+                    <div class="spots">
+                        {% for i in range(lot.max_spots) %}
+                            {% if i < lot.occupied_spots %}
+                                <div class="spot occupied">O</div>
+                            {% else %}
+                                <div class="spot available">A</div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="results-title"> No parking lot found with name "{{ query }}"</div>
+            {% endif %}
+        {% endif %}
+        {% if category == "pincode" %}
+            {% if results %}
+                {% for lot in results %}
+                <div class="result-card">
+                    <h3>Parking#{{ lot.id }} - {{ lot.name }}</h3>
+                    <p><strong>Address:</strong> {{ lot.address }}</p>
+                    <p><strong>Pincode:</strong> {{ lot.pin_code }}</p>
+                    <p><a href="/edit_lot/{{ lot.id }}">Edit</a> | <a href="/delete_lot/{{ lot.id }}">Delete</a></p>
+                    <p style="color: green;"><strong>(Occupied: {{ lot.occupied_spots }}/{{ lot.max_spots }})</strong></p>
+                    <div class="spots">
+                        {% for i in range(lot.max_spots) %}
+                            {% if i < lot.occupied_spots %}
+                                <div class="spot occupied">O</div>
+                            {% else %}
+                                <div class="spot available">A</div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="results-title">❌ No parking lot found with pincode "{{ query }}"</div>
+            {% endif %}
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+    }
+
+    .navbar {
+      background-color: #c3f0c3;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .navbar a {
+      margin: 0 10px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .dashboard-header {
+      text-align: center;
+      font-size: 24px;
+      margin-top: 20px;
+      color: #444;
+    }
+
+    .parking-lots {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    .lot-card {
+      background-color: white;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      width: 250px;
+      margin: 15px;
+      padding: 10px;
+      box-shadow: 2px 2px 8px #aaa;
+    }
+
+    .lot-header {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .lot-actions {
+      font-size: 14px;
+      color: orange;
+    }
+
+    .slot-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .slot {
+      width: 30px;
+      height: 30px;
+      text-align: center;
+      line-height: 30px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    .slot.available {
+      background-color: #99ff99;
+      color: black;
+    }
+
+    .slot.occupied {
+      background-color: #ff9999;
+      color: black;
+    }
+
+    .add-lot {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .add-lot button {
+      background-color: #84c6ff;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="navbar">
+    <div>
+      <strong>Welcome to Admin</strong>
+    </div>
+    <div>
+      <a href="/admin">Home</a>
+      <a href="/users">Users</a>
+      <a href="/search">Search</a>
+      <a href="#">Summary</a>
+      <a href="/login">Logout</a>
+      <a href="/admin_edit_profile" style="color: blue;">Edit Profile</a>
+    </div>
+  </div>
+
+  <div class="dashboard-header">
+    Parking Lots
+  </div>
+
+  <div class="parking-lots">
+    {% for lot in lots %}
+    <div class="lot-card">
+      <div class="lot-header">Parking#{{ loop.index }}</div>
+      <div class="lot-actions">
+        <a href="{{ url_for('edit_lot', lot_id=lot.id) }}">Edit</a> 
+        <a href="/delete_lot/{{ lot.id }}">Delete</a>
+      </div>
+      <div style="color: green; margin-top: 5px;">
+        (Occupied: {{ lot.occupied }}/{{ lot.capacity }})
+      </div>
+      <div class="slot-grid">
+        {% for slot in lot.slots %}
+        <a href="/view_slot/{{ slot.id }}" style="text-decoration: none;">
+            <div class="slot {% if slot.status == 'A' %}available{% else %}occupied{% endif %}">
+                {{ slot.status }}
+            </div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="add-lot">
+    <a href="/add_lot">
+      <button type="submit">+ Add Lot</button>
+    </form>
+  </div>
+
+</body>
+</html>
