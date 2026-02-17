@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Edit Profile</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .form-container {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0px 0px 15px rgba(0,0,0,0.1);
+      width: 420px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .error {
+      color: red;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .back-link {
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .back-link a {
+      text-decoration: none;
+      color: #0066cc;
+    }
+  </style>
+</head>
+<body>
+
+<div class="form-container">
+  <h2>Edit Your Profile</h2>
+  {% if error %}
+    <div class="error">{{ error }}</div>
+  {% endif %}
+  <form method="POST">
+    <label>Email:</label>
+    <input type="text" name="email" value="{{ user.email }}" required>
+
+    <label>Username:</label>
+    <input type="text" name="username" value="{{ user.username }}" required>
+
+    <label>Password:</label>
+    <input type="password" name="password" value="{{ user.password }}" required>
+
+    <label>Address:</label>
+    <textarea name="address" rows="3">{{ user.address }}</textarea>
+
+    <label>Pincode:</label>
+    <input type="text" name="pincode" value="{{ user.pincode }}">
+
+    <button type="submit">Update Profile</button>
+  </form>
+
+  <div class="back-link">
+    <a href="/user_dashboard">← Back to Dashboard</a>
+  </div>
+</div>
+
+</body>
+</html>

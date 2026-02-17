@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Parking Summary</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            background-color: #d4f5d1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 30px;
+        }
+
+        .navbar .welcome {
+            font-weight: bold;
+            color: red;
+            font-size: 18px;
+        }
+
+        .navbar .nav-links {
+            flex: 1;
+            text-align: center;
+        }
+
+        .navbar .nav-links a {
+            margin: 0 10px;
+            text-decoration: underline;
+            color: indigo;
+            font-weight: bold;
+        }
+
+        .navbar .profile-link a {
+            text-decoration: underline;
+            color: indigo;
+            font-weight: bold;
+        }
+
+        .chart-container {
+            width: 400px;
+            height: 300px;
+            margin: 30px auto;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="welcome">Welcome to {{ user.username }}</div>
+        <div class="nav-links">
+            <a href="/user_dashboard">Home</a> |
+            <a href="/user_summary">Summary</a> |
+            <a href="/login">Logout</a>
+        </div>
+        <div class="profile-link">
+            <a href="/user_edit_profile">Edit Profile</a>
+        </div>
+    </div>
+
+    <h2>Summary of Your Used Parking Lots</h2>
+
+    <div class="chart-container">
+        <canvas id="parkingChart"></canvas>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('parkingChart').getContext('2d');
+
+        const parkingChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: {{ labels | tojson }},
+                datasets: [{
+                    label: 'Times Parked',
+                    data: {{ counts | tojson }},
+                    backgroundColor: ['#7ed6df', '#70a1ff', '#ff6b81', '#ffa502', '#2ed573'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>

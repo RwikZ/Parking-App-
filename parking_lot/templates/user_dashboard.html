@@ -1,0 +1,142 @@
+<!-- templates/user_dashboard.html -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>User Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI';
+            background-color: #f5f5f5;
+            margin: 0;
+        }
+
+        .navbar {
+            background-color: #d4f4d2;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 18px;
+        }
+
+        .navbar .left {
+            color: red;
+            font-weight: bold;
+        }
+
+        .container {
+            padding: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+
+        .released {
+            background-color: #ffb3b3;
+        }
+
+        .out {
+            background-color: #b3ffb3;
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        input,
+        button {
+            padding: 8px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navbar">
+        <div class="left">Welcome to {{ user.username }}</div>
+        <div>
+            <a href="/user_dashboard">Home</a> |
+            <a href="/user_summary">Summary</a> |
+            <a href="/login">Logout</a>
+        </div>
+        <div><a href="/user_edit_profile">Edit Profile</a></div>
+    </div>
+
+    <div class="container">
+        <h2>Recent parking history</h2>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Location</th>
+                <th>Vehicle</th>
+                <th>Timestamp</th>
+                <th>Action</th>
+            </tr>
+            {% for record in parking_history %}
+            <tr>
+                <td>{{ record.id }}</td>
+                <td>{{ record.lot_id }}</td>
+                <td>{{ record.vehicle_no }}</td>
+                <td style="color: gray;">
+                    {% if record.timestamp %}
+                    {{ record.timestamp.strftime('%Y-%m-%d %H:%M') }}
+                    {% else %}
+                    <em>No timestamp</em>
+                    {% endif %}
+                </td>
+                <td class="{{ 'released' if record.status == 'Parked' else 'out' }}">
+                    {% if record.status == 'Parked' %}
+                    <a href="/release_parking/{{ record.id }}">Release</a>
+                    {% else %}
+                    Parked Out
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <form method="POST" class="search-box">
+            <label>Search parking @location/pin code: </label>
+            <input type="text" name="search" value="{{ query or '' }}">
+            <button type="submit">Search</button>
+        </form>
+
+        {% if results %}
+        <h2>Parking Lots @ {{ query }}</h2>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Address</th>
+                <th>Availability</th>
+                <th>Action</th>
+            </tr>
+            {% for lot in results %}
+            <tr>
+                <td>{{ lot.id }}</td>
+                <td>{{ lot.address }}</td>
+                <td>{{ lot.available }} / {{ lot.max_spots }}</td>
+                <td>
+                    {% if lot.available > 0 %}
+                    <a href="/book_parking/{{ lot.id }}">Book</a>
+                    {% else %}
+                    <span style="color: red;">Full</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+    </div>
+</body>
+
+</html>

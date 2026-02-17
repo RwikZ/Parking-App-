@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registered Users</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background-color: #d4f4d2;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 18px;
+        }
+
+        .navbar a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .navbar .left {
+            color: red;
+            font-weight: bold;
+        }
+
+        .container {
+            padding: 30px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 90%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            border: 1px solid #aaa;
+            padding: 12px 16px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #e3f2fd;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .note {
+            text-align: center;
+            color: red;
+            margin-top: 20px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="left">Welcome to Admin</div>
+        <div>
+            <a href="/admin">Home</a> |
+            <a href="/users">Users</a> |
+            <a href="/search">Search</a> |
+            <a href="/summary">Summary</a> |
+            <a href="/login">Logout</a>
+        </div>
+        <div><a href="/admin_edit_profile">Edit Profile</a></div>
+    </div>
+
+    <div class="container">
+        <h2>Registered Users</h2>
+
+        {% if users %}
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>E-Mail</th>
+                    <th>Username</th>
+                    <th>Address</th>
+                    <th>Pin Code</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.address or '—' }}</td>
+                    <td>{{ user.pincode or '—' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="note">No users found.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

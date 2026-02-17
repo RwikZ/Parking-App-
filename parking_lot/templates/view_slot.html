@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View/Delete Parking Spot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 40px;
+        }
+
+        .box {
+            background-color: white;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            padding: 30px;
+            width: 350px;
+            box-shadow: 2px 2px 12px #aaa;
+            margin-bottom: 30px;
+        }
+
+        .header {
+            background-color: #ffe29e;
+            padding: 10px;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .label {
+            font-weight: bold;
+        }
+
+        .value {
+            margin-bottom: 10px;
+        }
+
+        .note {
+            color: red;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        .actions {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .actions button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 0 10px;
+        }
+
+        .delete {
+            background-color: #ff9999;
+        }
+
+        .close {
+            background-color: #84c6ff;
+        }
+
+        .occupied-details {
+            display: none;
+            background-color: #fff8dc;
+        }
+
+        .occupied-details p {
+            margin: 5px 0;
+        }
+
+        .toggle-link {
+            color: blue;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <div class="header">View/Delete Parking Spot</div>
+    <div class="value"><span class="label">ID:</span> {{ slot.id }}</div>
+
+    <div class="value">
+        <span class="label">Status:</span>
+        {% if slot.status == 'O' %}
+            <span class="toggle-link" onclick="toggleDetails()">O</span>
+        {% else %}
+            <span style="color: green;">A</span>
+        {% endif %}
+    </div>
+
+    <div class="value"><span class="label">Lot:</span> {{ lot.name }}</div>
+    {% if booking %}
+    <div class="value"><span class="label">Vehicle:</span> {{ booking.vehicle_no }}</div>
+    <div class="value"><span class="label">Parked At:</span> {{ booking.timestamp.strftime('%Y-%m-%d %H:%M') }}</div>
+    <div class="value"><span class="label">Estimated Cost:</span> ₹{{ estimate }}</div>
+    {% endif %}
+
+
+    {% if slot.status == 'O' %}
+        <div class="note">Note: Cannot delete occupied parking spot</div>
+    {% endif %}
+
+    <div class="actions">
+        <form method="POST" style="display:inline;">
+            <button type="submit" class="delete" {% if slot.status == 'O' %}disabled style="opacity:0.5;"{% endif %}>Delete</button>
+        </form>
+        <a href="/admin">
+            <button type="button" class="close">Close</button>
+        </a>
+    </div>
+</div>
+
+<!-- Occupied Details Section -->
+{% if booking %}
+<div class="box occupied-details" id="detailsBox">
+    <div class="header">Occupied Parking Spot Details</div>
+    <p><span class="label">ID:</span> {{ booking.slot_id }}</p>
+    <p><span class="label">Customer ID:</span> {{ booking.user_id }}</p>
+    <p><span class="label">Vehicle Number:</span> {{ booking.vehicle_no }}</p>
+    <p><span class="label">Date/Time of Parking:</span> {{ booking.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+    <div class="actions">
+        <button class="close" onclick="toggleDetails()">Close</button>
+    </div>
+</div>
+{% endif %}
+
+<script>
+function toggleDetails() {
+    const box = document.getElementById("detailsBox");
+    if (box.style.display === "none" || box.style.display === "") {
+        box.style.display = "block";
+    } else {
+        box.style.display = "none";
+    }
+}
+</script>
+
+</body>
+</html>

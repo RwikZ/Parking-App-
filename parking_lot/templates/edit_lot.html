@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Parking Lot</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #350f66;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        form {
+            background: #a4bfe8;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 400px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        button[type="button"] {
+            background-color: #ccc;
+            margin-left: 10px;
+        }
+
+        .button-row {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <form method="POST">
+        <h2>Edit Parking Lot</h2>
+
+        <label>Prime Location Name:</label>
+        <input type="text" name="name" value="{{ lot.name }}" required>
+
+        <label>Address:</label>
+        <textarea name="address" rows="3" required>{{ lot.address }}</textarea>
+
+        <label>Pin Code:</label>
+        <input type="text" name="pin_code" value="{{ lot.pin_code }}" required>
+
+        <label>Price (per hour):</label>
+        <input type="number" name="price_per_hour" value="{{ lot.price_per_hour }}" step="0.01" required>
+
+        <label>Maximum Spots:</label>
+        <input type="number" name="max_spots" value="{{ lot.max_spots }}" required>
+
+        <div class="button-row">
+            <button type="submit">Update</button>
+            <a href="/admin"><button type="button">Cancel</button></a>
+        </div>
+    </form>
+</body>
+</html>

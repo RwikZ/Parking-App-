@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Summary Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f6f6f6;
+    }
+
+    /* Navbar */
+    .navbar {
+      background-color: #d1f4d1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 25px;
+      border-bottom: 3px solid orange;
+    }
+
+    .navbar a {
+      text-decoration: none;
+      color: #000;
+      font-weight: bold;
+      margin: 0 12px;
+    }
+
+    .navbar a:hover {
+      color: #0077cc;
+    }
+
+    .navbar .left {
+      color: red;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .navbar .center a {
+      color: black;
+    }
+
+    .navbar .right a {
+      color: #0077cc;
+    }
+
+    /* Page Content */
+    h2 {
+      text-align: center;
+      color: orange;
+      font-size: 26px;
+      margin-top: 20px;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 16px;
+      margin-bottom: 30px;
+    }
+
+    .charts-container {
+      display: flex;
+      justify-content: space-evenly;
+      flex-wrap: wrap;
+      padding: 20px;
+    }
+
+    .chart-box {
+      background-color: white;
+      border-radius: 20px;
+      padding: 20px;
+      margin: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      width: 420px;
+    }
+
+    .chart-box h4 {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="left">Welcome to Admin</div>
+    <div class="center">
+      <a href="/admin">Home</a> |
+      <a href="/users">Users</a> |
+      <a href="/search">Search</a> |
+      <a href="/summary">Summary</a> |
+      <a href="/login">Logout</a>
+    </div>
+    <div class="right">
+      <a href="/admin_edit_profile">Edit Profile</a>
+    </div>
+  </div>
+
+  <!-- Title -->
+  <h2>Summary shows statistical Charts</h2>
+  <div class="subtitle">
+    View overall system performance: revenue & slot usage per parking lot.
+  </div>
+
+  <!-- Charts -->
+  <div class="charts-container">
+    <div class="chart-box">
+      <h4> Revenue from each parking lot</h4>
+      <canvas id="revenueChart"></canvas>
+    </div>
+    <div class="chart-box">
+      <h4>🚗 Available vs Occupied Parking Lots</h4>
+      <canvas id="slotChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Chart Rendering -->
+  <script>
+    const revenueData = {
+      labels: {{ lot_revenue.keys()|list|tojson }},
+      datasets: [{
+        label: 'Revenue',
+        data: {{ lot_revenue.values()|list|tojson }},
+        backgroundColor: ['#4caf50', '#2196f3', '#f44336', '#ff9800', '#9c27b0']
+      }]
+    };
+
+    new Chart(document.getElementById('revenueChart'), {
+      type: 'doughnut',
+      data: revenueData
+    });
+
+    const slotLabels = {{ slot_summary|map(attribute='name')|list|tojson }};
+    const occupiedData = {{ slot_summary|map(attribute='occupied')|list|tojson }};
+    const availableData = {{ slot_summary|map(attribute='available')|list|tojson }};
+
+    new Chart(document.getElementById('slotChart'), {
+      type: 'bar',
+      data: {
+        labels: slotLabels,
+        datasets: [
+          {
+            label: 'Occupied',
+            data: occupiedData,
+            backgroundColor: '#f44336'
+          },
+          {
+            label: 'Available',
+            data: availableData,
+            backgroundColor: '#4caf50'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>

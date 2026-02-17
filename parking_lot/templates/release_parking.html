@@ -1,0 +1,63 @@
+<!-- templates/release_parking.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Release the parking spot</title>
+    <style>
+        body {
+            font-family: Arial;
+            background-color: #f0f0f0;
+        }
+
+        .box {
+            width: 400px;
+            margin: 80px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px gray;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+        }
+
+        .buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .buttons button {
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+
+        .buttons a button {
+            background-color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Release Parking Spot</h2>
+        <form method="POST">
+            <p><strong>Vehicle No:</strong> {{ booking.vehicle_no }}</p>
+            <p><strong>Parking Time:</strong> {{ booking.timestamp }}</p>
+            <p><strong>Current Time:</strong> {{ now }}</p>
+            <p><strong>Duration (hrs):</strong> {{ ((now - booking.timestamp).total_seconds() / 3600) | round(2) }}</p>
+            <p><strong>Total Cost:</strong> ₹{{ total_cost }}</p>
+            <div class="buttons">
+                <button type="submit">Confirm Release</button>
+                <a href="/user_dashboard"><button type="button">Cancel</button></a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
